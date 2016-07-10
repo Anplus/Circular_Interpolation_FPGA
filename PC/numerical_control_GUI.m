@@ -22,7 +22,7 @@ function varargout = numerical_control_GUI(varargin)
 
 % Edit the above text to modify the response to help numerical_control_GUI
 
-% Last Modified by GUIDE v2.5 09-Jul-2016 18:28:54
+% Last Modified by GUIDE v2.5 10-Jul-2016 16:20:07
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -58,6 +58,9 @@ handles.output = hObject;
 set(hObject,'toolbar','figure');
 set(gcf,'menubar','figure');
 
+handles.startx = 0;
+handles.starty = 0;
+
 handles.shape = int8(1);
 handles.Xs = int16(0);
 handles.Ys = int16(0);
@@ -84,7 +87,7 @@ set(handles.radiobutton5,'value',0);
 set(handles.radiobutton6,'value',0);
 
 subplot(handles.axes1)
-axis([-1000 1000 -1000 1000]);
+axis([-100 100 -100 100]);
 axis equal;
 grid on;
 box on;
@@ -405,8 +408,47 @@ else
     handles.Xe = int16(handles.x2 - handles.x3);
     handles.Ye = int16(handles.y2 - handles.y3);
 end
+handles.startx = handles.x1;
+handles.starty = handles.y1;
+%% serial communication start
+handles.o_SerialPort = serial('COM1','BaudRate',9600,'DataBits',8);
+set(handles.o_SerialPort,'InputBufferSize',1024000);
+handles.o_SerialPort.BytesAvailableFcnMode='byte';
+handles.o_SerialPort.BytesAvailableFcnCount=1; 
+handles.o_SerialPort.BytesAvailableFcn={@EveBytesAvailableFcn,handles};
+fopen(handles.o_SerialPort);
+handles
+%% transaction
+% fwrite(handles.o_SerialPort,1,'int16');%shape
+% fwrite(handles.o_SerialPort,1);%method
+% fwrite(handles.o_SerialPort,handles.Xs);%Xs
+% fwrite(handles.o_SerialPort,handles.Ys);%Ys
+% fwrite(handles.o_SerialPort,handles.Xe);%Xe
+% fwrite(handles.o_SerialPort,handles.Ye);%Ye
+% fwrite(handles.o_SerialPort,1);%direct
+% fwrite(handles.o_SerialPort,1);%max_speed
+% fwrite(handles.o_SerialPort,0);%accelerate
 guidata(hObject, handles);
 
+
+%% get serial data in 1 byte
+function EveBytesAvailableFcn(hObject, eventdata, handles )
+%% out
+handles.move = fread(handles.o_SerialPort,1)-48;
+handles.oldx = handles.startx;
+handles.oldy = handles.starty;
+if handles.move ==1
+    handles.startx = handles.startx + 1;
+elseif handles.move ==2
+    handles.startx = handles.startx - 1;
+elseif handles.move ==3
+    handles.starty = handles.starty + 1;
+elseif handles.move ==4
+    handles.starty = handles.starty - 1 ;
+end
+handles
+PB1_Callback (handles.PB1,eventdata,handles);
+guidata(handles.PB1,handles) ;%% function ends
 
 % --- Executes on button press in pushbutton_clear.
 function pushbutton_clear_Callback(hObject, eventdata, handles)
@@ -420,6 +462,23 @@ function figure1_CloseRequestFcn(hObject, eventdata, handles)
 % hObject    handle to figure1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
+fclose(handles.o_SerialPort);
 % Hint: delete(hObject) closes the figure
 delete(hObject);
+
+%% dummy button- just for transform handles
+% --- Executes on button press in PB1.
+function PB1_Callback(hObject, eventdata, handles)
+% hObject    handle to PB1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+handles
+handles.o_SerialPort.BytesAvailableFcn={@EveBytesAvailableFcn,handles};
+subplot(handles.axes1);
+line( [ handles.oldx  handles.startx] , [ handles.oldy  handles.starty ] );
+axis([-100 100 -100 100]);
+axis equal;
+grid on;
+box on;
+hold on;
+guidata(hObject,handles) ;%% dummy button function ends
