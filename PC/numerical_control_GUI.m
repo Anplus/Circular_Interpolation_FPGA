@@ -62,6 +62,7 @@ handles.startx = 0;
 handles.starty = 0;
 
 handles.shape = int8(1);
+handles.method = int8(1);
 handles.Xs = int16(0);
 handles.Ys = int16(0);
 handles.Xe = int16(0);
@@ -92,6 +93,12 @@ axis equal;
 grid on;
 box on;
 hold on;
+ handles.o_SerialPort = serial('COM1','BaudRate',9600,'DataBits',8);
+set(handles.o_SerialPort,'InputBufferSize',1024000);
+handles.o_SerialPort.BytesAvailableFcnMode='byte';
+handles.o_SerialPort.BytesAvailableFcnCount=1; 
+handles.o_SerialPort.BytesAvailableFcn={@EveBytesAvailableFcn,handles};
+fopen(handles.o_SerialPort);
 % Update handles structure
 guidata(hObject, handles);
 
@@ -166,6 +173,7 @@ function radiobutton4_Callback(hObject, eventdata, handles)
 % hObject    handle to radiobutton4 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+handles.method = int8(1);
 set(handles.radiobutton4,'value',1);
 set(handles.radiobutton5,'value',0);
 set(handles.radiobutton6,'value',0);
@@ -177,6 +185,7 @@ function radiobutton5_Callback(hObject, eventdata, handles)
 % hObject    handle to radiobutton5 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+handles.method = int8(2);
 set(handles.radiobutton4,'value',0);
 set(handles.radiobutton5,'value',1);
 set(handles.radiobutton6,'value',0);
@@ -188,6 +197,7 @@ function radiobutton6_Callback(hObject, eventdata, handles)
 % hObject    handle to radiobutton6 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+handles.method = int8(3);
 set(handles.radiobutton4,'value',0);
 set(handles.radiobutton5,'value',0);
 set(handles.radiobutton6,'value',1);
@@ -347,7 +357,8 @@ function edit_speed_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 str = get(hObject,'String');
-handles.speed = str2double(str);
+handles.sp = str2double(str);
+handles.speed = int8(handles.sp);
 guidata(hObject, handles);
 % Hints: get(hObject,'String') returns contents of edit_speed as text
 %        str2double(get(hObject,'String')) returns contents of edit_speed as a double
@@ -373,6 +384,7 @@ function edit_acc_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 str = get(hObject,'String');
 handles.acc = str2double(str);
+handles.accelerate = int8(handles.acc);
 guidata(hObject, handles);
 % Hints: get(hObject,'String') returns contents of edit_acc as text
 %        str2double(get(hObject,'String')) returns contents of edit_acc as a double
@@ -411,23 +423,23 @@ end
 handles.startx = handles.x1;
 handles.starty = handles.y1;
 %% serial communication start
-handles.o_SerialPort = serial('COM1','BaudRate',9600,'DataBits',8);
-set(handles.o_SerialPort,'InputBufferSize',1024000);
-handles.o_SerialPort.BytesAvailableFcnMode='byte';
-handles.o_SerialPort.BytesAvailableFcnCount=1; 
-handles.o_SerialPort.BytesAvailableFcn={@EveBytesAvailableFcn,handles};
-fopen(handles.o_SerialPort);
+% handles.o_SerialPort = serial('COM1','BaudRate',9600,'DataBits',8);
+% set(handles.o_SerialPort,'InputBufferSize',1024000);
+% handles.o_SerialPort.BytesAvailableFcnMode='byte';
+% handles.o_SerialPort.BytesAvailableFcnCount=1; 
+% handles.o_SerialPort.BytesAvailableFcn={@EveBytesAvailableFcn,handles};
+% fopen(handles.o_SerialPort);
 handles
 %% transaction
-% fwrite(handles.o_SerialPort,1,'int16');%shape
-% fwrite(handles.o_SerialPort,1);%method
-% fwrite(handles.o_SerialPort,handles.Xs);%Xs
-% fwrite(handles.o_SerialPort,handles.Ys);%Ys
-% fwrite(handles.o_SerialPort,handles.Xe);%Xe
-% fwrite(handles.o_SerialPort,handles.Ye);%Ye
-% fwrite(handles.o_SerialPort,1);%direct
-% fwrite(handles.o_SerialPort,1);%max_speed
-% fwrite(handles.o_SerialPort,0);%accelerate
+fwrite(handles.o_SerialPort,handles.shape,'int8');%shape
+fwrite(handles.o_SerialPort,handles.method,'int8');%method
+fwrite(handles.o_SerialPort,handles.Xs,'int16');%Xs
+fwrite(handles.o_SerialPort,handles.Ys,'int16');%Ys
+fwrite(handles.o_SerialPort,handles.Xe,'int16');%Xe
+fwrite(handles.o_SerialPort,handles.Ye,'int16');%Ye
+fwrite(handles.o_SerialPort,handles.direct,'int8');%direct
+fwrite(handles.o_SerialPort,handles.speed,'int8');%max_speed
+fwrite(handles.o_SerialPort,handles.accelerate,'int8');%accelerate
 guidata(hObject, handles);
 
 
