@@ -1,0 +1,41 @@
+m255
+K3
+13
+cModel Technology
+dD:\PROJECT\Electricity-Design\Simulation\test
+vwork
+!i10b 1
+VhRK_De6T=89[kj9@1P:323
+r1
+!s85 0
+31
+I<nH7hO27?;:8a^JlQ]NZP2
+Z0 dD:\PROJECT\Electricity-Design\Circular_Interpolation_FPGA\Simulation\test_circle
+w1468325891
+8D:/PROJECT/Electricity-Design/Circular_Interpolation_FPGA/Simulation/test_circle/work.v
+FD:/PROJECT/Electricity-Design/Circular_Interpolation_FPGA/Simulation/test_circle/work.v
+L0 4
+Z1 OE;L;10.1a;51
+Z2 o-work work -L mtiAvm -L mtiOvm -L mtiUvm -L mtiUPF
+!s100 S=T7VDMm?fNi_@7aQMN_31
+!s90 -reportprogress|300|-work|work|-vopt|D:/PROJECT/Electricity-Design/Circular_Interpolation_FPGA/Simulation/test_circle/work.v|
+!s108 1468331559.775000
+!s107 D:/PROJECT/Electricity-Design/Circular_Interpolation_FPGA/Simulation/test_circle/work.v|
+vwork_test
+V6d@SY[QD5:lQn:WbM0a]g3
+r1
+31
+I55ld;AfcV0DG2l2NdYzoh3
+Z3 dD:\PROJECT\Electricity-Design\Circular_Interpolation_FPGA\Simulation\test_circle
+w1468331552
+8D:/PROJECT/Electricity-Design/Circular_Interpolation_FPGA/Simulation/test_circle/work_test.v
+FD:/PROJECT/Electricity-Design/Circular_Interpolation_FPGA/Simulation/test_circle/work_test.v
+L0 2
+R1
+R2
+!i10b 1
+!s85 0
+!s90 -reportprogress|300|-work|work|-vopt|D:/PROJECT/Electricity-Design/Circular_Interpolation_FPGA/Simulation/test_circle/work_test.v|
+!s100 eQioak>Vk9]gbMFI3T`R<2
+!s108 1468331560.104000
+!s107 D:/PROJECT/Electricity-Design/Circular_Interpolation_FPGA/Simulation/test_circle/work_test.v|
